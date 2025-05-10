@@ -1,0 +1,6 @@
+@SignUP1_test_HostAddress = http://localhost:5067
+
+GET {{SignUP1_test_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

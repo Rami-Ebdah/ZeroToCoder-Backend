@@ -1,0 +1,49 @@
+﻿using SignUP1_test.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace SignUP1test.Models
+{
+    public class User
+    {
+        [Key]
+        public int UserID { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string FullName { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Email { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string PasswordHash { get; set; }
+
+        public DateTime? DateOfBirth { get; set; }
+
+        public string? Bio { get; set; }
+
+        [MaxLength(255)]
+        public string? Expertise { get; set; }
+
+        [MaxLength(50)]
+        public string? Phone { get; set; }
+
+        [MaxLength(255)]
+        public string? Address { get; set; }
+
+        public DateTime? DateJoined { get; set; }
+
+        public bool IsBlocked { get; set; } = false;
+
+        public List<Post> Posts { get; set; }
+        public List<Reply> Replies { get; set; }
+        public List<PostLike> PostLikes { get; set; }
+        public List<ReplyLike> ReplyLikes { get; set; }
+        public List<PostReport> PostReports { get; set; }
+        public List<ReplyReport> ReplyReports { get; set; }
+
+    }
+}
