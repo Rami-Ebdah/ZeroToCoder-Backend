@@ -15,7 +15,7 @@ namespace SignUP1_test.Helpers
             _configuration = configuration;
         }
 
-        public string GenerateToken(int userId, string fullName)
+        public string GenerateToken(int userId, string fullName, string role)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
@@ -24,7 +24,8 @@ namespace SignUP1_test.Helpers
             var claims = new[]
             {
                 new Claim("id", userId.ToString()),
-                new Claim(ClaimTypes.Name, fullName)
+                new Claim(ClaimTypes.Name, fullName),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var token = new JwtSecurityToken(

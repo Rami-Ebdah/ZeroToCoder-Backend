@@ -14,6 +14,7 @@ namespace SignUP1test.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+     
         private readonly AppDbContext _context;
         private readonly JwtTokenHelper _jwtTokenHelper;
 
@@ -35,7 +36,8 @@ namespace SignUP1test.Controllers
                 Email = request.Email,
                 PasswordHash = PasswordHasher.Hash(request.Password),
                 DateJoined = DateTime.UtcNow,
-                IsBlocked = false
+                IsBlocked = false,
+                 Role = "User" 
             };
 
             _context.Users.Add(user);
@@ -59,8 +61,8 @@ namespace SignUP1test.Controllers
                 return Unauthorized("Invalid email or password.");
             }
 
-            // ✅ Generate JWT Token
-            var token = _jwtTokenHelper.GenerateToken(user.UserID, user.FullName);
+           
+            var token = _jwtTokenHelper.GenerateToken(user.UserID, user.FullName,user.Role);
 
             return Ok(new
             {
@@ -71,7 +73,8 @@ namespace SignUP1test.Controllers
                     user.UserID,
                     user.FullName,
                     user.Email,
-                    user.DateJoined
+                    user.DateJoined,
+                    user.Role
                 }
             });
         }
@@ -107,7 +110,7 @@ namespace SignUP1test.Controllers
             if (user == null)
                 return NotFound("User not found.");
 
-            // 
+            
             if (!string.IsNullOrWhiteSpace(dto.FullName))
                 user.FullName = dto.FullName;
 

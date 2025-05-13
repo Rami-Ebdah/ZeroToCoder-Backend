@@ -34,6 +34,10 @@ namespace SignUP1test.Models
         [MaxLength(255)]
         public string? Address { get; set; }
 
+        [Required]
+        [MaxLength(20)]
+        public string Role { get; set; } = "User";
+
         public DateTime? DateJoined { get; set; }
 
         public bool IsBlocked { get; set; } = false;
