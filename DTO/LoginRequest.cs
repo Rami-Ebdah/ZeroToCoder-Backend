@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace SignUP1test.Models
+namespace ZeroToCoder.Dto
 
 
 {

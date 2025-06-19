@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SignUP1test.Data;
-using SignUP1test.DTO;
-using SignUP1test.Helpers;
-using SignUP1test.Models;
-using SignUP1_test.DTO;
-using SignUP1_test.Helpers;
-using SignUP1_test.Models;
+using ZeroToCoder.Data;
+using ZeroToCoder.Dto;
+using ZeroToCoder.Helpers;
+using ZeroToCoder.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SignUP1test.Controllers
 {
@@ -14,7 +12,7 @@ namespace SignUP1test.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-     
+
         private readonly AppDbContext _context;
         private readonly JwtTokenHelper _jwtTokenHelper;
 
@@ -37,7 +35,7 @@ namespace SignUP1test.Controllers
                 PasswordHash = PasswordHasher.Hash(request.Password),
                 DateJoined = DateTime.UtcNow,
                 IsBlocked = false,
-                 Role = "User" 
+                Role = "User"
             };
 
             _context.Users.Add(user);
@@ -61,8 +59,13 @@ namespace SignUP1test.Controllers
                 return Unauthorized("Invalid email or password.");
             }
 
-           
-            var token = _jwtTokenHelper.GenerateToken(user.UserID, user.FullName,user.Role);
+            if (user.IsBlocked)
+            {
+                return Unauthorized("Your account has been blocked. Please contact support.");
+            }
+
+
+            var token = _jwtTokenHelper.GenerateToken(user.UserID, user.FullName, user.Role);
 
             return Ok(new
             {
@@ -78,7 +81,6 @@ namespace SignUP1test.Controllers
                 }
             });
         }
-
 
         [HttpGet("profile/{email}")]
         public async Task<ActionResult<UserProfileDto>> GetProfile(string email)
@@ -96,10 +98,54 @@ namespace SignUP1test.Controllers
                 DateOfBirth = user.DateOfBirth,
                 Expertise = user.Expertise,
                 Bio = user.Bio,
+                Image = user.Image,
                 Password = user.PasswordHash
             };
 
             return Ok(profile);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<MyDto>> GetUserById(int id)
+        {
+            var user = await _context.Users
+                .Where(u => u.UserID == id)
+                .Select(u => new MyDto
+                {
+                    Id = u.UserID,
+                    FullName = u.FullName,
+                    Email = u.Email,
+
+                    IsBlocked = u.IsBlocked
+                })
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return NotFound("User not found.");
+
+            return Ok(user);
+        }
+
+
+        [HttpGet("by-email/{email}")]
+        public async Task<ActionResult<MyDto>> GetUserByEmail(string email)
+        {
+            var user = await _context.Users
+                .Where(u => u.Email == email)
+                .Select(u => new MyDto
+                {
+                    Id = u.UserID,
+                    FullName = u.FullName,
+                    Email = u.Email,
+
+                    IsBlocked = u.IsBlocked
+                })
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return NotFound("User not found.");
+
+            return Ok(user);
         }
 
 
@@ -110,12 +156,15 @@ namespace SignUP1test.Controllers
             if (user == null)
                 return NotFound("User not found.");
 
-            
+
             if (!string.IsNullOrWhiteSpace(dto.FullName))
                 user.FullName = dto.FullName;
 
             if (!string.IsNullOrWhiteSpace(dto.Phone))
                 user.Phone = dto.Phone;
+
+            if (!string.IsNullOrWhiteSpace(dto.Image))
+                user.Image = dto.Image;
 
             if (!string.IsNullOrWhiteSpace(dto.Address))
                 user.Address = dto.Address;
@@ -135,6 +184,52 @@ namespace SignUP1test.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("block/{userId}")]
+        public async Task<IActionResult> BlockUser(int userId, [FromQuery] bool block)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                return NotFound("User not found.");
+
+            user.IsBlocked = block;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = block ? "User blocked successfully." : "User unblocked successfully." });
+        }
+
+
+        [Authorize]
+        [HttpGet("purchase-history")]
+        public async Task<ActionResult<IEnumerable<TestPurchaseHistory>>> GetPurchaseHistory()
+        {
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userid" || c.Type == "UserID" || c.Type == "sub");
+            if (userIdClaim == null) return Unauthorized("Invalid token.");
+
+            int userId = int.Parse(userIdClaim.Value);
+
+
+
+            var history = await _context.Enrollments
+                .Include(e => e.Course)
+                .Where(e => e.UserID == userId)
+                .Select(e => new TestPurchaseHistory
+                {
+                    CourseTitle = e.Course.CourseTitle,
+                    DateEnrolled = e.DateEnrolled,
+                    Price = e.Course.Price
+                })
+                .ToListAsync();
+
+            return Ok(history);
+        }
+
+
 
     }
 }

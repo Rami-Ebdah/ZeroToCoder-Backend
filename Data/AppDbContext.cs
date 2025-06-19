@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SignUP1_test.Models;
-using SignUP1test.Models;
+using ZeroToCoder.Models;
 
-namespace SignUP1test.Data
+namespace ZeroToCoder.Data
 {
     public class AppDbContext : DbContext
     {
@@ -10,6 +9,7 @@ namespace SignUP1test.Data
             : base(options) { }
 
         public DbSet<User> Users { get; set; }
+
         public DbSet<Bundle> Bundles { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
@@ -25,6 +25,18 @@ namespace SignUP1test.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseCategory> CourseCategories { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
+
+
+
+        public DbSet<Instructor> Instructors { get; set; }
+        public DbSet<LearningOutcome> LearningOutcomes { get; set; }
+        public DbSet<SyllabusWeek> SyllabusWeeks { get; set; }
+        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Roadmap> Roadmaps { get; set; }
+
+        public DbSet<CourseReview> CourseReviews { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace SignUP1_test.Models
+namespace ZeroToCoder.Models
 {
     public class JobPost
     {

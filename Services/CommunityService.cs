@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SignUP1test.Data;
-using SignUP1test.DTO;
-using SignUP1test.Models;
-using SignUP1test.Helpers;
+using ZeroToCoder.Data;
+using ZeroToCoder.Helpers;
 using Microsoft.EntityFrameworkCore;
-using SignUP1_test.DTO;
-using SignUP1_test.Models;
+using ZeroToCoder.Dto;
+using ZeroToCoder.Models;
 
 
-namespace SignUP1_test.Services
+namespace ZeroToCoder.Services
 {
 
     public class CommunityService
@@ -24,7 +22,7 @@ namespace SignUP1_test.Services
 
         public async Task<List<PostDTO>> GetPostsAsync()
         {
-            var userId = GetCurrentUserId(); // Who is logged in
+            var userId = GetCurrentUserId();
 
             var posts = await _context.Posts
                 .Include(p => p.User)
@@ -34,7 +32,7 @@ namespace SignUP1_test.Services
                     Id = p.PostID,
                     Author = p.User.FullName,
                     Content = p.Content,
-                    CreatedAt = p.CreatedAt, // ⬅ Just assign CreatedAt
+                    CreatedAt = p.CreatedAt, 
                     Likes = _context.PostLikes.Count(l => l.PostID == p.PostID),
                     IsLiked = _context.PostLikes.Any(l => l.PostID == p.PostID && l.UserID == userId),
                     Replies = _context.Replies
@@ -45,14 +43,14 @@ namespace SignUP1_test.Services
                             Id = r.ReplyID,
                             Author = r.User.FullName,
                             Content = r.Content,
-                            CreatedAt = r.CreatedAt, // ⬅ Assign CreatedAt for replies too
+                            CreatedAt = r.CreatedAt, 
                             Likes = _context.ReplyLikes.Count(rl => rl.ReplyID == r.ReplyID),
                             IsLiked = _context.ReplyLikes.Any(rl => rl.ReplyID == r.ReplyID && rl.UserID == userId)
                         }).ToList()
                 })
                 .ToListAsync();
 
-            // After fetching from database, format the time in C#
+            
             foreach (var post in posts)
             {
                 post.Timestamp = GetTimeAgo(post.CreatedAt);
@@ -173,7 +171,7 @@ namespace SignUP1_test.Services
             var reports = _context.PostReports.Where(r => r.PostID == postId);
             _context.PostReports.RemoveRange(reports);
 
-            // Finally, remove the post itself
+         
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
@@ -186,14 +184,14 @@ namespace SignUP1_test.Services
             if (reply == null)
                 return null;
 
-            // Remove associated likes and reports (if needed)
+           
             var likes = _context.ReplyLikes.Where(l => l.ReplyID == replyId);
             _context.ReplyLikes.RemoveRange(likes);
 
             var reports = _context.ReplyReports.Where(r => r.ReplyID == replyId);
             _context.ReplyReports.RemoveRange(reports);
 
-            // Finally, remove the reply itself
+           
             _context.Replies.Remove(reply);
             await _context.SaveChangesAsync();
 
@@ -207,7 +205,7 @@ namespace SignUP1_test.Services
             if (userId == 0)
                 return null;
 
-            // Check if the report already exists (optional logic to prevent duplicates)
+          
             var alreadyReported = await _context.PostReports
                 .AnyAsync(r => r.PostID == postId && r.UserID == userId);
             if (alreadyReported)
@@ -319,7 +317,7 @@ namespace SignUP1_test.Services
                 Author = user.FullName,
                 Content = reply.Content,
                 CreatedAt = reply.CreatedAt,
-                Timestamp = "just now", // optionally calculate like: TimeAgo(reply.CreatedAt)
+                Timestamp = "just now",
                 Likes = 0,
                 IsLiked = false
             };

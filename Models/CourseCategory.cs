@@ -1,4 +1,5 @@
-﻿namespace SignUP1_test.Models
+﻿using ZeroToCoder.Models;
+namespace ZeroToCoder.Models
 {
     public class CourseCategory
     {

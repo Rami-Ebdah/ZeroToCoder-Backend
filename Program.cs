@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SignUP1test.Data;
-using SignUP1_test.Services;
-using SignUP1_test.Helpers; // Make sure JwtTokenHelper is here
+using ZeroToCoder.Data;
+using ZeroToCoder.Services;
+using ZeroToCoder.Helpers; 
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ============================
-// Configure Services
-// ============================
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -26,22 +23,18 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure Database Context
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// ============================
-// Register your services
-// ============================
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<CommunityService>();
-builder.Services.AddScoped<JwtTokenHelper>(); // ? Register JwtTokenHelper
+builder.Services.AddScoped<JwtTokenHelper>(); 
 
-// ============================
-// Configure JWT Authentication
-// ============================
+
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -62,9 +55,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// ============================
-// Configure Middleware
-// ============================
 
 if (app.Environment.IsDevelopment())
 {
@@ -76,7 +66,7 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // ? Important: Use Authentication before Authorization
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();

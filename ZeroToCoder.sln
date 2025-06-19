@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignUP1test", "SignUP1test.csproj", "{5D6971DC-7D1B-45BA-A40A-CFD02AE1414E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeroToCoder", "ZeroToCoder.csproj", "{5D6971DC-7D1B-45BA-A40A-CFD02AE1414E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

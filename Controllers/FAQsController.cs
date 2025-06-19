@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SignUP1test.Data;
-using SignUP1_test.DTO;
-using SignUP1_test.Models;
+using ZeroToCoder.Data;
+using ZeroToCoder.Dto;
+using ZeroToCoder.Models;
 
-namespace SignUP1test.Controllers
+namespace ZeroToCoder.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

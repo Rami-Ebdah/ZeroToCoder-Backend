@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using SignUP1_test.Services;
-using SignUP1test.Data;
-using SignUP1test.DTO;
-using SignUP1test.Models;
-using SignUP1test.Helpers;
 using Microsoft.EntityFrameworkCore;
-using SignUP1_test.DTO;
-using SignUP1_test.Models;
+using ZeroToCoder.Services;
+using ZeroToCoder.Data;
+using ZeroToCoder.Dto;
+using ZeroToCoder.Models;
+using ZeroToCoder.Helpers;
 
-namespace SignUP1test.Controllers
+
+
+namespace ZeroToCoder.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -23,7 +23,7 @@ namespace SignUP1test.Controllers
             _communityService = communityService;
         }
 
-        // Add [Authorize] to restrict access to authenticated users
+        
         [HttpGet("posts")]
         public async Task<IActionResult> GetPosts()
         {
@@ -31,7 +31,7 @@ namespace SignUP1test.Controllers
             return Ok(posts);
         }
 
-        // Protect the creation of posts with [Authorize]
+        
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("posts")]
         public async Task<IActionResult> CreatePost([FromBody] CreatePostDTO createPostDto)
@@ -44,7 +44,7 @@ namespace SignUP1test.Controllers
             return Ok(post);
         }
 
-        // Protect liking posts
+        
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("posts/{postId}/like")]
         public async Task<IActionResult> ToggleLikePost(int postId)
@@ -57,7 +57,7 @@ namespace SignUP1test.Controllers
             return Ok(result);
         }
 
-        // Protect reporting posts
+        
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("posts/{postId}/report")]
         public async Task<IActionResult> ReportPost(int postId, [FromBody] ReportPostDTO reportDto)
@@ -70,7 +70,7 @@ namespace SignUP1test.Controllers
             return Ok(new { message = result });
         }
 
-        // Protect replying to posts
+       
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("posts/{postId}/replies")]
         public async Task<IActionResult> CreateReply(int postId, [FromBody] CreateReplyDTO dto)
@@ -83,7 +83,7 @@ namespace SignUP1test.Controllers
             return Ok(reply);
         }
 
-        // Protect liking replies
+        
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("posts/{postId}/replies/{replyId}/like")]
         public async Task<IActionResult> ToggleReplyLike(int replyId)
@@ -96,7 +96,7 @@ namespace SignUP1test.Controllers
             return Ok(result);
         }
 
-        // Protect reporting replies
+        
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("posts/{postId}/replies/{replyId}/report")]
         public async Task<IActionResult> ReportReply(int replyId, [FromBody] ReplyReportCreateDTO dto)

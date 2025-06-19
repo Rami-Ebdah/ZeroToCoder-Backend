@@ -1,4 +1,4 @@
-﻿namespace SignUP1_test.Models
+﻿namespace ZeroToCoder.Models
 {
     public class JobApplication
     {

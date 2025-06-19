@@ -1,4 +1,4 @@
-﻿namespace SignUP1_test.DTO
+﻿namespace ZeroToCoder.Dto
 {
     public class UserProfileDto
     {
@@ -9,6 +9,7 @@
         public DateTime? DateOfBirth { get; set; }
         public string? Expertise { get; set; }
         public string? Bio { get; set; }
+        public string? Image { get; set; }
         public string? Password { get; set; }
     }
 }

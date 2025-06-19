@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SignUP1_test.DTO;
-using SignUP1_test.Models;
-using SignUP1test.Data;
+using ZeroToCoder.Dto;
+using ZeroToCoder.Models;
+using ZeroToCoder.Data;
 
 
-namespace SignUP1_test.Controllers
+namespace ZeroToCoder.Controllers
 {
    
         [ApiController]
@@ -20,7 +20,7 @@ namespace SignUP1_test.Controllers
                 _env = env;
             }
 
-            // إضافة طلب توظيف جديد + رفع CV
+           
             [HttpPost]
             public async Task<IActionResult> Apply([FromForm] JobApplicationDto dto)
             {
@@ -62,7 +62,7 @@ namespace SignUP1_test.Controllers
                 });
             }
 
-            //  عرض جميع الطلبات
+            
             [HttpGet]
             public IActionResult GetAll()
             {
@@ -78,7 +78,7 @@ namespace SignUP1_test.Controllers
                 return Ok(apps);
             }
 
-            // عرض طلب توظيف واحد
+           
             [HttpGet("{id}")]
             public IActionResult Get(int id)
             {
@@ -95,14 +95,14 @@ namespace SignUP1_test.Controllers
                 });
             }
 
-            //  حذف طلب توظيف
+           
             [HttpDelete("{id}")]
             public async Task<IActionResult> Delete(int id)
             {
                 var app = await _context.JobApplications.FindAsync(id);
                 if (app == null) return NotFound();
 
-                // حذف الملف من السيرفر إذا موجود
+               
                 var filePath = Path.Combine(_env.WebRootPath, app.CV ?? "");
                 if (System.IO.File.Exists(filePath))
                     System.IO.File.Delete(filePath);

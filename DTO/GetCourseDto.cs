@@ -1,4 +1,4 @@
-﻿namespace SignUP1_test.DTO
+﻿namespace ZeroToCoder.Dto
 {
     public class GetCourseDto
     {
@@ -12,6 +12,7 @@
         public double? Price { get; set; }
         public string? Duration { get; set; }
         public string? Instructor { get; set; }
+        public string? Description { get; set; }
 
         public List<string>? Category { get; set; }
     }

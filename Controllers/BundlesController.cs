@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SignUP1test.Data;
-using SignUP1test.DTO;
-using SignUP1test.Models;
-using SignUP1test.Helpers;
+using ZeroToCoder.Data;
 using Microsoft.EntityFrameworkCore;
-using SignUP1_test.DTO;
-using SignUP1_test.Models;
-namespace SignUP1test.Controllers
+using ZeroToCoder.Dto;
+using ZeroToCoder.Models;
+using Microsoft.AspNetCore.Authorization;
+
+namespace ZeroToCoder.Controllers
 {
 
     [Route("api/[controller]")]
@@ -80,5 +79,76 @@ namespace SignUP1test.Controllers
             await _context.SaveChangesAsync();
             return Ok($"Bundle '{name}' deleted successfully.");
         }
+
+        [Authorize]
+        [HttpPost("enroll/{bundleId}")]
+        public async Task<IActionResult> EnrollInBundle(int bundleId)
+        {
+            var userIdClaim = User.FindFirst("id")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
+                return Unauthorized(new { message = "Invalid or missing token." });
+
+            int userId = int.Parse(userIdClaim);
+
+            var bundle = await _context.Bundles.FindAsync(bundleId);
+            if (bundle == null)
+                return NotFound(new { message = "Bundle not found." });
+
+            if (string.IsNullOrWhiteSpace(bundle.Courses))
+                return BadRequest(new { message = "Bundle has no courses." });
+
+           
+            var courseNames = bundle.Courses
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(name => name.Trim())
+                .ToList();
+
+            var newlyEnrolled = new List<string>();
+            var alreadyEnrolled = new List<string>();
+            var notFound = new List<string>();
+
+            foreach (var courseName in courseNames)
+            {
+                var course = await _context.Courses
+                    .FirstOrDefaultAsync(c => c.CourseTitle == courseName);
+
+                if (course == null)
+                {
+                    notFound.Add(courseName);
+                    continue;
+                }
+
+                var exists = await _context.Enrollments
+                    .AnyAsync(e => e.UserID == userId && e.CourseID == course.CourseID);
+
+                if (!exists)
+                {
+                    var enrollment = new Enrollment
+                    {
+                        UserID = userId,
+                        CourseID = course.CourseID,
+                        DateEnrolled = DateTime.UtcNow
+                    };
+
+                    _context.Enrollments.Add(enrollment);
+                    newlyEnrolled.Add(courseName);
+                }
+                else
+                {
+                    alreadyEnrolled.Add(courseName);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Enrollment completed.",
+                newlyEnrolledCourses = newlyEnrolled,
+                alreadyEnrolledCourses = alreadyEnrolled,
+                coursesNotFound = notFound
+            });
+        }
+
     }
 }

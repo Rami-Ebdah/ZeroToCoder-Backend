@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace SignUP1test.Helpers
+namespace ZeroToCoder.Helpers
 {
     public static class PasswordHasher
     {

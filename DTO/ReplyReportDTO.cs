@@ -1,4 +1,4 @@
-﻿namespace SignUP1_test.DTO
+﻿namespace ZeroToCoder.Dto
 {
     public class ReplyReportCreateDTO
     {

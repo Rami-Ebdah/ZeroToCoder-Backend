@@ -1,8 +1,7 @@
 ﻿using System;
-using SignUP1test.Models;
 using System.ComponentModel.DataAnnotations;
-
-namespace SignUP1_test.Models
+using ZeroToCoder.Models;
+namespace ZeroToCoder.Models
 {
     public class Post
     {
@@ -20,7 +19,7 @@ namespace SignUP1_test.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
+       
         public User User { get; set; }
         public List<Reply> Replies { get; set; }
         public List<PostLike> PostLikes { get; set; }

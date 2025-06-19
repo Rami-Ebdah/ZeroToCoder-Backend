@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SignUP1test.DTO
+namespace ZeroToCoder.Dto
 {
     public class SignupRequest
     {

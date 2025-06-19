@@ -1,7 +1,7 @@
-﻿using SignUP1test.Models;
+﻿using ZeroToCoder.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SignUP1_test.Models
+namespace ZeroToCoder.Models
 {
     public class PostReport
     {
